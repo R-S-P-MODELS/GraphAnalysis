@@ -18,3 +18,5 @@ Metrics that are calculated between vertices pairs are displayed in a interactiv
 A tool for displaying cumminitioes using cluster_louvain is also displayed
 
 To install via dockerfile just clone this repository and use docker build .
+
+You can also pull the image from dockerhub with docker pull rspmodels/graphanalysis
