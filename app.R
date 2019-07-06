@@ -104,7 +104,8 @@ ui <- fluidPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-   
+  options(shiny.maxRequestSize=1000000*1024^2)
+  
    output$VizualizarGrafo<-renderPlot({
      if(!is.null(input$Arquivo)){
        require(data.table)
@@ -158,7 +159,7 @@ server <- function(input, output) {
        FinalTable[13,]=c('Modularity', modularity(Graph,membership=V(Graph))   )
        FinalTable[14,]=c('Farthest Distance',farthest.nodes(Graph)$distance)
        Indices=farthest.nodes(Graph)$vertices
-       FinalTable[15,]=c('Nodes of Farthest Distance',paste(Indices[1],"with",Indices[2],sep=" "))
+       FinalTable[15,]=c('Nodes of Farthest Distance',paste(rownames(Matriz1)[Indices[1]],"with",rownames(Matriz1)[Indices[2]],sep=" "))
        return(FinalTable)
      }
      
@@ -198,8 +199,11 @@ server <- function(input, output) {
        Graph=graph_from_adjacency_matrix(Matriz1,mode="undirected")
        if(input$OpcoesM=="Distances")
          Objetivo=melt(distances(Graph))
-       if(input$OpcoesM=="Similarity")
+       if(input$OpcoesM=="Similarity"){
          Objetivo=melt(similarity(Graph))
+         Objetivo[,1]=colnames(Matriz1)[Objetivo[,1]]
+         Objetivo[,2]=colnames(Matriz1)[Objetivo[,2]]
+       }
        
        
        p1=ggplot(data = Objetivo, aes(x=Var1, y=Var2, fill=value)) + geom_tile() + labs(x="",y=""  ) + theme(axis.title.x=element_blank(),
